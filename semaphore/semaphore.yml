@@ -1,0 +1,35 @@
+version: v1.0
+name: WeatherProject pipeline
+agent:
+  machine:
+    type: e1-standard-2
+    os_image: ubuntu1804
+blocks:
+  - name: "Build"
+    task:
+      env_vars:
+        - name: APP_ENV
+          value: prod
+      jobs:
+      - name: Docker build
+        commands:
+          - checkout
+          - ls -1
+          - echo $APP_ENV
+          - echo "Docker build..."
+          - echo "done"
+  - name: "tests"
+    task:
+      jobs:
+      - name: Smoke
+        commands:
+          - checkout
+          - echo "running test file"
+          - sudo python3 test.py
+  - name: "Push Image"
+    task:
+      jobs:
+      - name: Push
+        commands:
+          - checkout
+          - echo "make docker.push"
